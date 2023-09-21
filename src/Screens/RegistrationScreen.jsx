@@ -111,7 +111,6 @@ const RegistrationScreen = () => {
                     isFocused.login ? styles.inputFocused : null,
                   ]}
                   placeholder="Логін"
-                  placeholderTextColor="#BDBDBD"
                   onFocus={() => handleFocus('login')}
                   onBlur={() => handleBlur('login')}
                 />
@@ -254,7 +253,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     fontFamily: 'Roboto-400',
     fontSize: 16,
-    color: '#BDBDBD',
+    color: '#212121',
     backgroundColor: '#F6F6F6',
     borderWidth: 1,
     borderColor: '#E8E8E8',
@@ -273,7 +272,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     fontFamily: 'Roboto-400',
     fontSize: 16,
-    color: '#BDBDBD',
+    color: '#212121',
     backgroundColor: '#F6F6F6',
     borderWidth: 1,
     borderColor: '#E8E8E8',
