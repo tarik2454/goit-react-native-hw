@@ -1,7 +1,14 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export const LoginScreen = () => {
+const LoginScreen = () => {
+  const navigation = useNavigation(); // Инициализируем навигацию
+
+  const goToRegistrationScreen = () => {
+    navigation.navigate('Registration'); // Переход на экран Registration
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Registration Form</Text>
@@ -13,9 +20,10 @@ export const LoginScreen = () => {
       />
       <Button
         title="Register"
-        onPress={() => {
-          /* Обробка події натискання кнопки */
-        }}
+        // onPress={() => {
+        //   /* Обробка події натискання кнопки */
+        // }}
+        onPress={goToRegistrationScreen}
       />
     </View>
   );
@@ -27,10 +35,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   header: {
     fontSize: 24,
     marginBottom: 20,
   },
+
   input: {
     width: '80%',
     height: 40,
@@ -40,3 +50,5 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+export default LoginScreen;

@@ -8,7 +8,7 @@ const data = [
   // Додайте більше даних для відображення
 ];
 
-export const PostsScreen = () => {
+const PostsScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Список постів</Text>
@@ -41,3 +41,5 @@ const styles = StyleSheet.create({
     borderBottomColor: 'gray',
   },
 });
+
+export default PostsScreen;

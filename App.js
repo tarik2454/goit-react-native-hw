@@ -1,33 +1,40 @@
 import React from 'react';
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
-import BackgroundImage from './src/images/backgroundImage.png';
-import { RegistrationScreen } from './src/Screens/RegistrationScreen';
+import { useFonts } from 'expo-font';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './src/Screens/HomeScreen';
+import RegistrationScreen from './src/Screens/RegistrationScreen';
+import LoginScreen from './src/Screens/LoginScreen';
+
+const Stack = createStackNavigator();
 
 const App = () => {
+  const [fontsLoaded] = useFonts({
+    'Roboto-400': require('./src/assets/fonts/Roboto-400.ttf'),
+    'Roboto-500': require('./src/assets/fonts/Roboto-500.ttf'),
+    'Inter-500': require('./src/assets/fonts/Inter-500.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.page}>
-      <ImageBackground source={BackgroundImage} style={styles.img}>
-        <View style={styles.wrapper}>
-          <RegistrationScreen />
-        </View>
-      </ImageBackground>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Registration">
+        <Stack.Screen
+          name="Registration"
+          component={RegistrationScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  page: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#eaeaea',
-  },
-  img: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '100%',
-    height: '100%',
-  },
-  wrapper: {},
-});
 
 export default App;
