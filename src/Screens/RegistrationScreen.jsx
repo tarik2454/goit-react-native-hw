@@ -26,11 +26,9 @@ const RegistrationScreen = () => {
     email: false,
     password: false,
   });
+  const [shift, setShift] = useState(false);
+  const [position] = useState(new Animated.Value(0));
   const navigation = useNavigation();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   const handleFocus = inputName => {
     setIsFocused(prev => ({
@@ -46,12 +44,13 @@ const RegistrationScreen = () => {
     }));
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const goToLoginScreen = () => {
     navigation.navigate('Login');
   };
-
-  const [shift, setShift] = useState(false);
-  const [position] = useState(new Animated.Value(0));
 
   useEffect(() => {
     const listenerShow = Keyboard.addListener('keyboardDidShow', () => {
@@ -69,7 +68,7 @@ const RegistrationScreen = () => {
 
   useEffect(() => {
     Animated.timing(position, {
-      toValue: shift ? 70 : 0,
+      toValue: shift ? 90 : 0,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -90,6 +89,7 @@ const RegistrationScreen = () => {
         <ScrollView
           contentContainerStyle={styles.scrollViewContainer}
           bounces={false}
+          keyboardShouldPersistTaps="always"
         >
           <Animated.View
             style={[styles.formWrapper, { paddingBottom: position }]}
@@ -163,9 +163,20 @@ const RegistrationScreen = () => {
                 <Text style={styles.buttonText}>Зареєстуватися</Text>
               </Pressable>
 
-              <Pressable onPress={goToLoginScreen}>
-                <Text style={{ color: '#1B4371' }}>Вже є акаунт? Увійти</Text>
-              </Pressable>
+              <View style={styles.linkWrapper}>
+                <Text style={{ color: '#1B4371' }}>Вже є акаунт?</Text>
+                <Pressable onPress={goToLoginScreen}>
+                  <Text
+                    style={{
+                      color: '#1B4371',
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#1B4371',
+                    }}
+                  >
+                    Увійти
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </Animated.View>
         </ScrollView>
@@ -296,6 +307,12 @@ export const styles = StyleSheet.create({
     fontFamily: 'Roboto-400',
     fontSize: 16,
     color: '#FFFFFF',
+  },
+
+  linkWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 5,
   },
 });
 
