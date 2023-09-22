@@ -11,6 +11,8 @@ import {
   Dimensions,
   ScrollView,
   Keyboard,
+  TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import BackgroundImage from '../images/backgroundImage.png';
 import { useNavigation } from '@react-navigation/native';
@@ -19,15 +21,20 @@ import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 const LoginScreen = () => {
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState({
     email: false,
     password: false,
   });
-  const [shift, setShift] = useState(false);
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [shift, setShift] = useState('');
   const [position] = useState(new Animated.Value(0));
   const navigation = useNavigation();
+
+  const onLogin = () => {
+    Alert.alert('Credentials', `${email} + ${password}`);
+  };
 
   const handleFocus = inputName => {
     setIsFocused(prev => ({
@@ -74,102 +81,106 @@ const LoginScreen = () => {
   }, [shift]);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.page}>
-        <StatusBar style="auto" />
-        <ImageBackground
-          style={styles.img}
-          source={BackgroundImage}
-          resizeMode="cover"
-        />
-        <ScrollView
-          contentContainerStyle={styles.scrollViewContainer}
-          bounces={false}
-          keyboardShouldPersistTaps="always"
-        >
-          <Animated.View
-            style={[styles.formWrapper, { paddingBottom: position }]}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <View style={styles.page}>
+          <StatusBar style="auto" />
+          <ImageBackground
+            style={styles.img}
+            source={BackgroundImage}
+            resizeMode="cover"
+          />
+          <ScrollView
+            contentContainerStyle={styles.scrollViewContainer}
+            bounces={false}
+            keyboardShouldPersistTaps="always"
           >
-            <View style={styles.inner}>
-              <View style={styles.foto}>
-                <Pressable style={styles.addFoto} onPress={() => {}}>
-                  <SvgComponent />
-                </Pressable>
-              </View>
+            <Animated.View
+              style={[styles.formWrapper, { paddingBottom: position }]}
+            >
+              <View style={styles.inner}>
+                <View style={styles.foto}>
+                  <Pressable style={styles.addFoto} onPress={() => {}}>
+                    <SvgComponent />
+                  </Pressable>
+                </View>
 
-              <Text style={styles.p}>Увійти</Text>
+                <Text style={styles.p}>Увійти</Text>
 
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  type="email"
-                  style={[
-                    styles.input,
-                    isFocused.email ? styles.inputFocused : null,
-                  ]}
-                  placeholder="Адреса електронної пошти"
-                  placeholderStyle={styles.placeholder}
-                  onFocus={() => handleFocus('email')}
-                  onBlur={() => handleBlur('email')}
-                />
-                <View style={styles.passwordInput}>
+                <View style={styles.inputWrapper}>
                   <TextInput
+                    type="email"
                     style={[
-                      styles.inputRelative,
-                      isFocused.password ? styles.inputFocused : null,
+                      styles.input,
+                      isFocused.email ? styles.inputFocused : null,
                     ]}
-                    placeholder="Пароль"
+                    placeholder="Адреса електронної пошти"
                     placeholderStyle={styles.placeholder}
-                    secureTextEntry={!showPassword}
-                    value={password}
-                    onChangeText={text => setPassword(text)}
-                    onFocus={() => handleFocus('password')}
-                    onBlur={() => handleBlur('password')}
+                    value={email}
+                    onChangeText={setEmail}
+                    onFocus={() => handleFocus('email')}
+                    onBlur={() => handleBlur('email')}
                   />
-                  <Pressable
-                    style={styles.textAbsolute}
-                    onPress={togglePasswordVisibility}
-                  >
-                    <Text style={styles.textToggle}>
-                      {showPassword ? 'Приховати' : 'Показати'}
+                  <View style={styles.passwordInput}>
+                    <TextInput
+                      style={[
+                        styles.inputRelative,
+                        isFocused.password ? styles.inputFocused : null,
+                      ]}
+                      placeholder="Пароль"
+                      placeholderStyle={styles.placeholder}
+                      secureTextEntry={!showPassword}
+                      value={password}
+                      onChangeText={setPassword}
+                      onFocus={() => handleFocus('password')}
+                      onBlur={() => handleBlur('password')}
+                    />
+                    <Pressable
+                      style={styles.textAbsolute}
+                      onPress={togglePasswordVisibility}
+                    >
+                      <Text style={styles.textToggle}>
+                        {showPassword ? 'Приховати' : 'Показати'}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      backgroundColor: pressed ? '#f36601' : '#FF6C00',
+                    },
+                    styles.button,
+                  ]}
+                  onPress={onLogin}
+                >
+                  <Text style={styles.buttonText}>Увійти</Text>
+                </Pressable>
+
+                <View style={styles.linkWrapper}>
+                  <Text style={{ color: '#1B4371' }}>Немає акаунту?</Text>
+                  <Pressable onPress={goToRegistrationScreen}>
+                    <Text
+                      style={{
+                        color: '#1B4371',
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#1B4371',
+                      }}
+                    >
+                      Зареєструватися
                     </Text>
                   </Pressable>
                 </View>
               </View>
-
-              <Pressable
-                style={({ pressed }) => [
-                  {
-                    backgroundColor: pressed ? '#f36601' : '#FF6C00',
-                  },
-                  styles.button,
-                ]}
-                onPress={() => {}}
-              >
-                <Text style={styles.buttonText}>Увійти</Text>
-              </Pressable>
-
-              <View style={styles.linkWrapper}>
-                <Text style={{ color: '#1B4371' }}>Немає акаунту?</Text>
-                <Pressable onPress={goToRegistrationScreen}>
-                  <Text
-                    style={{
-                      color: '#1B4371',
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#1B4371',
-                    }}
-                  >
-                    Зареєструватися
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-          </Animated.View>
-        </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+            </Animated.View>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
