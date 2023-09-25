@@ -1,10 +1,11 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './src/Screens/HomeScreen';
-import RegistrationScreen from './src/Screens/RegistrationScreen';
 import LoginScreen from './src/Screens/LoginScreen';
+import RegistrationScreen from './src/Screens/RegistrationScreen';
+import Home from './src/Screens/Home';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +13,7 @@ const App = () => {
   const [fontsLoaded] = useFonts({
     'Roboto-400': require('./src/assets/fonts/Roboto-400.ttf'),
     'Roboto-500': require('./src/assets/fonts/Roboto-500.ttf'),
+    'Roboto-700': require('./src/assets/fonts/Roboto-700.ttf'),
     'Inter-500': require('./src/assets/fonts/Inter-500.ttf'),
   });
 
@@ -25,12 +27,23 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: false,
+          }}
         />
         <Stack.Screen
           name="Registration"
           component={RegistrationScreen}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

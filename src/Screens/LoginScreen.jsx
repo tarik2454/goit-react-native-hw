@@ -16,9 +16,10 @@ import {
 } from 'react-native';
 import BackgroundImage from '../images/backgroundImage.png';
 import { useNavigation } from '@react-navigation/native';
-import SvgComponent from '../componets/SvgComponent';
+import SvgComponent from '../images/SvgComponent';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import Home from './Home';
 
 const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,9 +33,9 @@ const LoginScreen = () => {
   const [position] = useState(new Animated.Value(0));
   const navigation = useNavigation();
 
-  const onLogin = () => {
-    Alert.alert('Credentials', `${email} + ${password}`);
-  };
+  // const onLogin = () => {
+  //   Alert.alert('Credentials', `${email} + ${password}`);
+  // };
 
   const handleFocus = inputName => {
     setIsFocused(prev => ({
@@ -55,7 +56,7 @@ const LoginScreen = () => {
   };
 
   const goToRegistrationScreen = () => {
-    navigation.navigate('Registration'); // Переход на экран Registration
+    navigation.navigate('Registration');
   };
 
   useEffect(() => {
@@ -112,7 +113,8 @@ const LoginScreen = () => {
 
                 <View style={styles.inputWrapper}>
                   <TextInput
-                    type="email"
+                    inputMode="email"
+                    keyboardType="email-address"
                     style={[
                       styles.input,
                       isFocused.email ? styles.inputFocused : null,
@@ -126,6 +128,7 @@ const LoginScreen = () => {
                   />
                   <View style={styles.passwordInput}>
                     <TextInput
+                      inputMode="text"
                       style={[
                         styles.inputRelative,
                         isFocused.password ? styles.inputFocused : null,
@@ -156,7 +159,7 @@ const LoginScreen = () => {
                     },
                     styles.button,
                   ]}
-                  onPress={onLogin}
+                  onPress={() => navigation.navigate('Home')}
                 >
                   <Text style={styles.buttonText}>Увійти</Text>
                 </Pressable>

@@ -16,9 +16,10 @@ import {
 } from 'react-native';
 import BackgroundImage from '../images/backgroundImage.png';
 import { useNavigation } from '@react-navigation/native';
-import SvgComponent from '../componets/SvgComponent';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import SvgComponents from '../images/SvgComponent';
+import SvgComponent from '../images/SvgComponent';
 
 const RegistrationScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -114,7 +115,7 @@ const RegistrationScreen = () => {
 
                 <View style={styles.inputWrapper}>
                   <TextInput
-                    type="text"
+                    inputMode="text"
                     style={[
                       styles.input,
                       isFocused.login ? styles.inputFocused : null,
@@ -126,7 +127,8 @@ const RegistrationScreen = () => {
                     onBlur={() => handleBlur('login')}
                   />
                   <TextInput
-                    type="email"
+                    inputMode="email"
+                    keyboardType="email-address"
                     style={[
                       styles.input,
                       isFocused.email ? styles.inputFocused : null,
@@ -140,6 +142,7 @@ const RegistrationScreen = () => {
                   />
                   <View style={styles.passwordInput}>
                     <TextInput
+                      inputMode="text"
                       style={[
                         styles.inputRelative,
                         isFocused.password ? styles.inputFocused : null,
