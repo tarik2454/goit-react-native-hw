@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import User from '../componets/User';
 import PostList from '../componets/PostList';
 import { ScrollView } from 'react-native';
-import TabNavigation from '../componets/TabNavigation';
 
 const PostsScreen = () => {
   return (

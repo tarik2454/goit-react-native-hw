@@ -27,7 +27,12 @@ const TabNavigation = () => {
           name="Posts"
           component={PostsScreen}
           options={{
-            headerTitle: () => <HeaderTitle title="Публікації" />,
+            headerTitle: () => (
+              <HeaderTitle
+                title="Публікації"
+                margin={{ left: '37%', right: '15%' }}
+              />
+            ),
             headerRight: () => <LogOutBtn />,
             headerStyle: {
               borderBottomWidth: 1,
@@ -40,7 +45,15 @@ const TabNavigation = () => {
           name="CreatePosts"
           component={CreatePostsScreen}
           options={{
-            headerTitle: () => <HeaderTitle title="Створити публікацію" />,
+            headerTitle: () => (
+              <HeaderTitle
+                title="Створити публікацію"
+                margin={{ left: 0, right: 0 }}
+              />
+            ),
+            headerStyle: {
+              borderBottomWidth: 1,
+            },
             tabBarIcon: () => <SvgSprite name="new" />,
             tabBarLabel: '',
           }}
@@ -50,6 +63,9 @@ const TabNavigation = () => {
           component={ProfileScreen}
           options={{
             tabBarIcon: () => <SvgSprite name="user" />,
+            headerStyle: {
+              borderBottomWidth: 1,
+            },
             tabBarLabel: '',
           }}
         ></Tab.Screen>

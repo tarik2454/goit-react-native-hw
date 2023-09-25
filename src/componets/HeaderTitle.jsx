@@ -2,13 +2,13 @@ import React from 'react';
 import { Text } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
-const HeaderTitle = ({ title }) => {
+const HeaderTitle = ({ title, margin }) => {
   return (
     <View
       style={{
         flexDirection: 'row',
-        marginLeft: '37%',
-        marginRight: '20%',
+        marginLeft: margin.left,
+        marginRight: margin.right,
       }}
     >
       <Text style={styles.titleText}>{title}</Text>
