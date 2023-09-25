@@ -4,10 +4,10 @@ const GlobalStyles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 32,
-    // paddingBottom: 32,
+    paddingBottom: 46,
     paddingLeft: 16,
     paddingRight: 16,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   },
 
   headerStyles: {
