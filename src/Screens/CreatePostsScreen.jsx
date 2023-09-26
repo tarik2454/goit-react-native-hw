@@ -3,6 +3,7 @@ import ImagePicker from 'react-native-image-picker';
 import {
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   Text,
   TextInput,
@@ -67,7 +68,7 @@ const CreatePostsScreen = () => {
             <TextInput
               style={styles.textInput}
               inputMode="text"
-              placeholder="Місцевість.."
+              placeholder="Місцевість..."
             />
           </View>
         </View>

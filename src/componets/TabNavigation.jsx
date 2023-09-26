@@ -6,6 +6,7 @@ import LogOutBtn from './LogOutBtn';
 import SvgSprite from '../images/SvgSprite';
 import ProfileScreen from '../Screens/ProfileScreen';
 import CreatePostsScreen from '../Screens/CreatePostsScreen';
+import { Pressable } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +34,11 @@ const TabNavigation = () => {
                 margin={{ left: '37%', right: '15%' }}
               />
             ),
-            headerRight: () => <LogOutBtn />,
+            headerRight: () => (
+              <Pressable style={{ marginRight: 16 }} onPress={() => {}}>
+                <LogOutBtn />
+              </Pressable>
+            ),
             headerStyle: {
               borderBottomWidth: 1,
             },
@@ -62,10 +67,8 @@ const TabNavigation = () => {
           name="Profile"
           component={ProfileScreen}
           options={{
+            headerShown: false,
             tabBarIcon: () => <SvgSprite name="user" />,
-            headerStyle: {
-              borderBottomWidth: 1,
-            },
             tabBarLabel: '',
           }}
         ></Tab.Screen>

@@ -19,7 +19,6 @@ import { useNavigation } from '@react-navigation/native';
 import SvgComponent from '../images/SvgComponent';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import Home from './Home';
 
 const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);

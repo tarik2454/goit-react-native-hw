@@ -18,7 +18,6 @@ import BackgroundImage from '../images/backgroundImage.png';
 import { useNavigation } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import SvgComponents from '../images/SvgComponent';
 import SvgComponent from '../images/SvgComponent';
 
 const RegistrationScreen = () => {
@@ -107,7 +106,7 @@ const RegistrationScreen = () => {
               <View style={styles.inner}>
                 <View style={styles.foto}>
                   <Pressable style={styles.addFoto} onPress={() => {}}>
-                    <SvgComponent />
+                    <SvgComponent name="add-orange" />
                   </Pressable>
                 </View>
 
