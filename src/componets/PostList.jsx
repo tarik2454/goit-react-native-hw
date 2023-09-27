@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import { Image } from 'react-native';
 import { View } from 'react-native';
 import SvgSprite from '../images/SvgSprite';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const PostList = () => {
   const defaultPosts = [
@@ -11,23 +12,57 @@ const PostList = () => {
       img: require('../images/post-image-1.png'),
       title: 'Ліс',
       comentsCount: 0,
-      location: `Ivano-Frankivs'k Region, Ukraine`,
+      location: {
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
     },
     {
       img: require('../images/post-image-2.png'),
       title: 'Захід на Чорному морі',
       comentsCount: 0,
-      location: `Ivano-Frankivs'k Region, Ukraine`,
+      location: {
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
     },
     {
       img: require('../images/post-image-3.png'),
       title: 'Старий будиночок y Венеції',
       comentsCount: 0,
-      location: `Ivano-Frankivs'k Region, Ukraine`,
+      location: {
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
     },
   ];
 
+  const [userName, setUserName] = useState('Anonimus');
+  const [userEmail, setUserEmail] = useState('anonimus@mail.com');
   const [posts, setPosts] = useState(defaultPosts);
+
+  const navigation = useNavigation();
+  const { params } = useRoute();
+  if (params && !posts.some(el => params.id === el.id)) {
+    setPosts(prev => [...prev, params]);
+  }
+
+  const showMap = item => {
+    navigation.navigate('MapScreen', {
+      location: item.location,
+      title: item.title,
+    });
+  };
+
+  const showComents = item => {
+    navigation.navigate('Comments', item);
+  };
 
   return (
     <View style={styles.wrapper}>

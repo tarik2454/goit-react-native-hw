@@ -6,6 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/Screens/LoginScreen';
 import RegistrationScreen from './src/Screens/RegistrationScreen';
 import Home from './src/Screens/Home';
+import MapScreen from './src/Screens/MapScreen';
+import CommentsScreen from './src/Screens/CommentsScreen';
 
 const Stack = createStackNavigator();
 
@@ -45,6 +47,8 @@ const App = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="Comments" component={CommentsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

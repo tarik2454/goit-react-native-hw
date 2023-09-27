@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import ImagePicker from 'react-native-image-picker';
+import React, { useEffect, useState } from 'react';
 import {
-  Keyboard,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -9,32 +8,82 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import GlobalStyles from '../styles/GlobalStyles';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import SvgSprite from '../images/SvgSprite';
+import { useNavigation } from '@react-navigation/native';
+import { Camera } from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
+import * as Location from 'expo-location';
+import { TouchableOpacity } from 'react-native';
+import GlobalStyles from '../styles/GlobalStyles';
 
 const CreatePostsScreen = () => {
   const [isPressed, setIsPressed] = useState(false);
+  const [photoName, setPhotoName] = useState('');
+  const [photoLocation, setPhotoLocation] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [photo, setPhoto] = useState('');
+  const navigation = useNavigation();
 
-  const selectImage = () => {
-    const options = {
-      title: 'Виберіть фото',
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      await MediaLibrary.requestPermissionsAsync();
 
-    ImagePicker.showImagePicker(options, response => {
-      if (response.didCancel) {
-        console.log('Отменено');
-      } else if (response.error) {
-        console.log('Ошибка: ', response.error);
-      } else {
-        // Здесь вы можете обработать выбранное изображение, например, сохранить его в состояние компонента или передать на сервер
-        console.log('Выбранное изображение: ', response.uri);
+      setHasPermission(status === 'granted');
+    })();
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
       }
+
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      setLocation(coords);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (photo && photoName && photoLocation) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  }, [photo, photoName, photoLocation]);
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
+  const takePhoto = async () => {
+    const pic = await cameraRef.takePictureAsync();
+    setPhoto(pic.uri);
+    console.log('====================================');
+    console.log(pic.uri);
+    console.log('====================================');
+  };
+
+  const publicPost = () => {
+    console.log(location);
+    navigation.navigate('Posts', {
+      id: 4,
+      img: photo,
+      location: location,
+      title: photoName,
+      comentsCount: 0,
+      locationName: photoLocation,
     });
   };
 
@@ -49,12 +98,23 @@ const CreatePostsScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={GlobalStyles.container}>
-        <TouchableWithoutFeedback onPress={selectImage}>
-          <View style={styles.foto}>
-            <View style={styles.circle}></View>
-            <SvgSprite style={styles.svgIcon} name="camera" />
-          </View>
-        </TouchableWithoutFeedback>
+        <Camera style={styles.camera} ref={setCameraRef}>
+          {photo ? (
+            <View style={styles.cameraIMG}>
+              <Image
+                source={{ uri: photo }}
+                style={{ width: '100%', height: 240 }}
+              />
+            </View>
+          ) : (
+            <TouchableOpacity onPress={takePhoto}>
+              <View style={styles.foto}>
+                <View style={styles.circle}></View>
+                <SvgSprite style={styles.svgIcon} name="camera" />
+              </View>
+            </TouchableOpacity>
+          )}
+        </Camera>
         <Text style={styles.textFoto}>Завантажте фото</Text>
 
         <View style={styles.form}>
@@ -69,6 +129,8 @@ const CreatePostsScreen = () => {
               style={styles.textInput}
               inputMode="text"
               placeholder="Місцевість..."
+              value={photoLocation}
+              onChangeText={setPhotoLocation}
             />
           </View>
         </View>
@@ -79,7 +141,7 @@ const CreatePostsScreen = () => {
             },
             styles.button,
           ]}
-          onPress={handlePress}
+          onPress={publicPost}
           onPressIn={() => setIsPressed(true)}
           onPressOut={() => setIsPressed(false)}
         >
@@ -109,6 +171,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
     borderRadius: 8,
     borderWidth: 1,
+    overflow: 'hidden',
   },
 
   circle: {
@@ -161,6 +224,24 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Roboto-400',
     fontSize: 16,
+  },
+
+  camera: {
+    position: 'relative',
+    width: '100%',
+    height: 240,
+    marginBottom: 8,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+
+  cameraIMG: {
+    width: '100%',
+    height: 240,
+    backgroundColor: '#F6F6F6',
+    position: 'absolute',
+    zIndex: 10,
   },
 });
 
