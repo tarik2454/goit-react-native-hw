@@ -31,7 +31,7 @@ const TabNavigation = () => {
             headerTitle: () => (
               <HeaderTitle
                 title="Публікації"
-                margin={{ left: '37%', right: '15%' }}
+                margin={{ left: '36%', right: '17%' }}
               />
             ),
             headerRight: () => (

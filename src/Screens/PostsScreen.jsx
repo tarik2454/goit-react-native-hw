@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import { View } from 'react-native';
@@ -41,8 +41,8 @@ const defaultPosts = [
     comentsCount: 0,
     locationName: `Ivano-Frankivs'k Region, Ukraine`,
     location: {
-      latitude: 37.78825,
-      longitude: -122.4324,
+      latitude: 48.9226,
+      longitude: 24.7111,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
@@ -54,8 +54,8 @@ const PostsScreen = () => {
   const [userEmail, setUserEmail] = useState('anonimus@mail.com');
   const [posts, setPosts] = useState(defaultPosts);
   const navigation = useNavigation();
-
   const { params } = useRoute();
+
   if (params && !posts.some(el => params.id === el.id)) {
     setPosts(prev => [...prev, params]);
   }
@@ -78,6 +78,7 @@ const PostsScreen = () => {
         <View style={styles.wrapper}>
           {posts.map((item, index) => (
             <View key={index}>
+              {console.log(item)}
               <Image style={styles.image} source={item.img} />
               <Text style={styles.title}>{item.title}</Text>
 
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
 
   image: {
     width: '100%',
+    height: 240,
     marginBottom: 8,
     borderRadius: 8,
     overflow: 'hidden',
