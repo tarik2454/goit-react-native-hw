@@ -19,6 +19,13 @@ import { useNavigation } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import SvgComponent from '../images/SvgComponent';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  updateProfile,
+} from 'firebase/auth';
+import { auth } from '../../app.json';
 
 const RegistrationScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,8 +41,29 @@ const RegistrationScreen = () => {
   const [position] = useState(new Animated.Value(0));
   const navigation = useNavigation();
 
-  const onRegistration = () => {
-    Alert.alert('Credentials', `${login} + ${email} + ${password}`);
+  // const onRegistration = () => {
+  //   Alert.alert('Credentials', `${login} + ${email} + ${password}`);
+  // };
+
+  const registerUser = async ({ login, email, password }) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser, {
+        displayName: login,
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleRegistration = async () => {
+    try {
+      await registerUser({ email, password });
+
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+    }
   };
 
   const handleFocus = inputName => {
@@ -172,7 +200,7 @@ const RegistrationScreen = () => {
                     },
                     styles.button,
                   ]}
-                  onPress={onRegistration}
+                  onPress={handleRegistration}
                 >
                   <Text style={styles.buttonText}>Зареєстуватися</Text>
                 </Pressable>
