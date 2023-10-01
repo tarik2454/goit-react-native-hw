@@ -19,13 +19,9 @@ import { useNavigation } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import SvgComponent from '../images/SvgComponent';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  updateProfile,
-} from 'firebase/auth';
-import { auth } from '../../app.json';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerThunk } from '../redux/auth/authOperations';
+import { selectUser } from '../redux/auth/authSelectors';
 
 const RegistrationScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -39,31 +35,23 @@ const RegistrationScreen = () => {
   const [password, setPassword] = useState('');
   const [shift, setShift] = useState(false);
   const [position] = useState(new Animated.Value(0));
+  const [avatarLocalPath, setAvatarLocalPath] = useState(null);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
 
-  // const onRegistration = () => {
-  //   Alert.alert('Credentials', `${login} + ${email} + ${password}`);
-  // };
-
-  const registerUser = async ({ login, email, password }) => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(auth.currentUser, {
-        displayName: login,
-      });
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const handleRegistration = async () => {
-    try {
-      await registerUser({ email, password });
-
+  useEffect(() => {
+    if (user) {
       navigation.navigate('Home');
-    } catch (error) {
-      console.error('Ошибка регистрации:', error);
     }
+  }, []);
+
+  const handleRegistration = () => {
+    dispatch(registerThunk({ email, password, login }));
+    // setLogin('');
+    // setEmail('');
+    // setPassword('');
+    navigation.navigate('Home');
   };
 
   const handleFocus = inputName => {

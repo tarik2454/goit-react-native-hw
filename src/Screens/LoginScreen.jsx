@@ -19,6 +19,14 @@ import { useNavigation } from '@react-navigation/native';
 import SvgComponent from '../images/SvgComponent';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectError,
+  selectUser,
+  selectUserId,
+  userSelector,
+} from '../redux/auth/authSelectors';
+import { logInThunk } from '../redux/auth/authOperations';
 
 const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,10 +39,26 @@ const LoginScreen = () => {
   const [shift, setShift] = useState('');
   const [position] = useState(new Animated.Value(0));
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
 
-  // const onLogin = () => {
-  //   Alert.alert('Credentials', `${email} + ${password}`);
-  // };
+  useEffect(() => {
+    if (user) {
+      navigation.navigate('Home');
+    }
+  }, []);
+
+  const logIn = () => {
+    if (!email || !password) {
+      Alert.alert('Хуй там!!!');
+      return;
+    }
+
+    dispatch(logInThunk({ email, password }));
+    navigation.navigate('Home');
+    setEmail('');
+    setPassword('');
+  };
 
   const handleFocus = inputName => {
     setIsFocused(prev => ({
@@ -52,10 +76,6 @@ const LoginScreen = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-  };
-
-  const goToRegistrationScreen = () => {
-    navigation.navigate('Registration');
   };
 
   useEffect(() => {
@@ -158,14 +178,16 @@ const LoginScreen = () => {
                     },
                     styles.button,
                   ]}
-                  onPress={() => navigation.navigate('Home')}
+                  onPress={logIn}
                 >
                   <Text style={styles.buttonText}>Увійти</Text>
                 </Pressable>
 
                 <View style={styles.linkWrapper}>
                   <Text style={{ color: '#1B4371' }}>Немає акаунту?</Text>
-                  <Pressable onPress={goToRegistrationScreen}>
+                  <Pressable
+                    onPress={() => navigation.navigate('Registration')}
+                  >
                     <Text
                       style={{
                         color: '#1B4371',

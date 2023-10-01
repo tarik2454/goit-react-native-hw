@@ -7,16 +7,14 @@ import { getFirestore } from 'firebase/firestore';
 // Функція для підключення сховища файлів в проект
 import { getStorage } from 'firebase/storage';
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyAlWMe-w-6_1kV-GmIbx3Y-O7StE6uyXv0',
-  authDomain: 'base-for-react-nativ.firebaseapp.com',
-  databaseURL:
-    'https://base-for-react-nativ-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId: 'base-for-react-nativ',
-  storageBucket: 'base-for-react-nativ.appspot.com',
-  messagingSenderId: '73094093366',
-  appId: '1:73094093366:android:9899c88fecb01b6c931697',
-  // measurementId: 'G-measurement-id',
+  apiKey: 'AIzaSyAk9pyFBJeLNlv5ttB61mLVReSTt372Fuk',
+  authDomain: 'my-react-native-project-7a827.firebaseapp.com',
+  projectId: 'my-react-native-project-7a827',
+  storageBucket: 'my-react-native-project-7a827.appspot.com',
+  messagingSenderId: '376514940738',
+  appId: '1:376514940738:web:8b46cfeaa00326435f02db',
 };
 
 const app = initializeApp(firebaseConfig);
