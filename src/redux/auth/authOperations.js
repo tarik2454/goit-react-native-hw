@@ -2,15 +2,15 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
   updateProfile,
+  signOut,
 } from 'firebase/auth';
 import { auth } from '../../../config';
 
 export const registerThunk = createAsyncThunk(
   'auth/register',
   async (credentials, thunkAPI) => {
-    const { login } = credentials;
+    const login = credentials.login;
     const email = credentials.email;
     const password = credentials.password;
     try {
@@ -36,24 +36,34 @@ export const registerThunk = createAsyncThunk(
 
 export const logInThunk = createAsyncThunk(
   'auth/logIn',
-  async (credentials, thunkAPI) => {
-    const email = credentials.email;
-    const password = credentials.password;
+  async (credentials, { rejectWithValue }) => {
+    const { email, password } = credentials;
     try {
-      const userData = await signInWithEmailAndPassword(auth, email, password);
+      const {
+        user: { uid, displayName, photoURL },
+      } = await signInWithEmailAndPassword(auth, email, password);
+
       return {
-        login: userData.user.displayName,
-        email: userData.user.email,
-        userId: userData.user.uid,
+        uid,
+        email,
+        name: displayName,
+        avatarURL: photoURL,
       };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      Alert.alert('Ви ввели неправильну адресу електронної пошти або пароль');
+      return rejectWithValue(error.message);
     }
   }
 );
 
-const authStateChanged = async (onChange = () => {}) => {
-  onAuthStateChanged(user => {
-    onChange(user);
-  });
-};
+export const logOutThunk = createAsyncThunk(
+  'auth/logOut',
+  async (_, { rejectWithValue }) => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      // alert(`LogoutError, ${error.message}`);
+      return rejectWithValue(error.message);
+    }
+  }
+);

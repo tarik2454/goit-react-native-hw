@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PostsScreen from '../Screens/PostsScreen';
 import HeaderTitle from './HeaderTitle';
 import LogOutBtn from './LogOutBtn';
@@ -7,16 +7,32 @@ import SvgSprite from '../images/SvgSprite';
 import ProfileScreen from '../Screens/ProfileScreen';
 import CreatePostsScreen from '../Screens/CreatePostsScreen';
 import { Pressable } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { selectIsLoggedIn } from '../redux/auth/authSelectors';
+import { logOutThunk } from '../redux/auth/authOperations';
+import { TouchableOpacity } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigation.navigate('Login');
+    }
+  }, [isLoggedIn]);
+
   return (
     <>
       <Tab.Navigator
         screenOptions={{
           tabBarStyle: {
             height: 83,
+
             paddingLeft: 42,
             paddingRight: 42,
             paddingTop: 9,
@@ -35,9 +51,12 @@ const TabNavigation = () => {
               />
             ),
             headerRight: () => (
-              <Pressable style={{ marginRight: 16 }} onPress={() => {}}>
+              <TouchableOpacity
+                style={{ marginRight: 16 }}
+                onPress={() => dispatch(logOutThunk())}
+              >
                 <LogOutBtn />
-              </Pressable>
+              </TouchableOpacity>
             ),
             headerStyle: {
               borderBottomWidth: 1,

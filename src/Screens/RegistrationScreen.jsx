@@ -13,15 +13,17 @@ import {
   Keyboard,
   Alert,
   TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
 import BackgroundImage from '../images/backgroundImage.png';
 import { useNavigation } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import SvgComponent from '../images/SvgComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerThunk } from '../redux/auth/authOperations';
-import { selectUser } from '../redux/auth/authSelectors';
+import { selectIsLoggedIn } from '../redux/auth/authSelectors';
+import * as ImagePicker from 'expo-image-picker';
+import SvgSprite from '../images/SvgSprite';
 
 const RegistrationScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,23 +37,50 @@ const RegistrationScreen = () => {
   const [password, setPassword] = useState('');
   const [shift, setShift] = useState(false);
   const [position] = useState(new Animated.Value(0));
-  const [avatarLocalPath, setAvatarLocalPath] = useState(null);
+  const [localAvatar, setLocalAvatar] = useState(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   useEffect(() => {
-    if (user) {
+    if (isLoggedIn) {
       navigation.navigate('Home');
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const handleRegistration = () => {
-    dispatch(registerThunk({ email, password, login }));
-    // setLogin('');
-    // setEmail('');
-    // setPassword('');
+    if (!email && !password && !login) {
+      Alert.alert('Введіть логін, електронну пошту та пароль!');
+      return;
+    }
+
+    dispatch(registerThunk({ email, password, login, localAvatar }));
+    setLogin('');
+    setEmail('');
+    setPassword('');
+    setLocalAvatar(null);
     navigation.navigate('Home');
+  };
+
+  async function pickImage() {
+    const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
+    if (!granted) {
+      Alert.alert('Permission to access of the image library is required!');
+      return;
+    }
+
+    const { canceled, assets } = await ImagePicker.launchImageLibraryAsync({
+      quality: 1,
+      allowsEditing: true,
+      allowsMultipleSelection: false,
+    });
+    if (!canceled) {
+      setLocalAvatar(assets[0].uri);
+    }
+  }
+
+  const deletePickImage = () => {
+    setLocalAvatar(null);
   };
 
   const handleFocus = inputName => {
@@ -121,9 +150,24 @@ const RegistrationScreen = () => {
             >
               <View style={styles.inner}>
                 <View style={styles.foto}>
-                  <Pressable style={styles.addFoto} onPress={() => {}}>
-                    <SvgComponent name="add-orange" />
-                  </Pressable>
+                  {localAvatar ? (
+                    <>
+                      <Image
+                        source={{ uri: localAvatar }}
+                        style={styles.avatar}
+                      />
+                      <Pressable
+                        style={styles.addFotoGray}
+                        onPress={deletePickImage}
+                      >
+                        <SvgSprite name="add-grey" />
+                      </Pressable>
+                    </>
+                  ) : (
+                    <Pressable style={styles.addFotoOrange} onPress={pickImage}>
+                      <SvgSprite name="add-orange" />
+                    </Pressable>
+                  )}
                 </View>
 
                 <Text style={styles.p}>Реєстрація</Text>
@@ -245,12 +289,26 @@ export const styles = StyleSheet.create({
     zIndex: 2,
   },
 
-  addFoto: {
+  avatar: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 16,
+  },
+
+  addFotoOrange: {
     borderRadius: 12.5,
     transform: 'rotate(45deg)',
     position: 'absolute',
     right: -12.5,
     bottom: 14,
+  },
+
+  addFotoGray: {
+    borderRadius: 12.5,
+    position: 'absolute',
+    right: -18,
+    bottom: 7.5,
   },
 
   inner: {

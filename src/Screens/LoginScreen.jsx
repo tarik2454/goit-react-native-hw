@@ -22,6 +22,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectError,
+  selectIsLoggedIn,
   selectUser,
   selectUserId,
   userSelector,
@@ -40,24 +41,24 @@ const LoginScreen = () => {
   const [position] = useState(new Animated.Value(0));
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   useEffect(() => {
-    if (user) {
+    if (isLoggedIn) {
       navigation.navigate('Home');
     }
-  }, []);
+  }, [isLoggedIn]);
 
-  const logIn = () => {
-    if (!email || !password) {
-      Alert.alert('Хуй там!!!');
+  const handleLogIn = () => {
+    if (!email && !password) {
+      Alert.alert('Введіть електронну пошту та пароль!');
       return;
     }
 
     dispatch(logInThunk({ email, password }));
     navigation.navigate('Home');
-    setEmail('');
-    setPassword('');
+    // setEmail('');
+    // setPassword('');
   };
 
   const handleFocus = inputName => {
@@ -178,7 +179,7 @@ const LoginScreen = () => {
                     },
                     styles.button,
                   ]}
-                  onPress={logIn}
+                  onPress={handleLogIn}
                 >
                   <Text style={styles.buttonText}>Увійти</Text>
                 </Pressable>

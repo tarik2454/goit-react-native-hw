@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { logInThunk, registerThunk } from './authOperations';
+import { logInThunk, logOutThunk, registerThunk } from './authOperations';
 
 const defaultUserData = {
   uid: '',
@@ -9,9 +9,11 @@ const defaultUserData = {
 };
 
 const initialState = {
-  user: null,
+  email: '',
+  name: '',
+  password: '',
   isLoggedIn: false,
-  error: '',
+  user: { ...defaultUserData },
 };
 
 export const authSlice = createSlice({
@@ -27,20 +29,20 @@ export const authSlice = createSlice({
       })
       .addCase(registerThunk.pending, (state, action) => {})
       .addCase(registerThunk.rejected, (state, action) => {})
-      .addCase(logIn.fulfilled, (state, { payload }) => {
+      .addCase(logInThunk.fulfilled, (state, { payload }) => {
         state.isLoggedIn = true;
         state.user = payload;
       })
-      .addCase(logOut.fulfilled, state => {
+      .addCase(logOutThunk.fulfilled, state => {
         state.isLoggedIn = false;
         state.user = { ...defaultUserData };
-      })
-      .addCase(changeAvatar.fulfilled, (state, { payload }) => {
-        state.user.avatarURL = payload;
-      })
-      .addCase(deleteAvatar.fulfilled, state => {
-        state.user.avatarURL = null;
       });
+    // .addCase(changeAvatar.fulfilled, (state, { payload }) => {
+    //   state.user.avatarURL = payload;
+    // })
+    // .addCase(deleteAvatar.fulfilled, state => {
+    //   state.user.avatarURL = null;
+    // });
   },
 });
 

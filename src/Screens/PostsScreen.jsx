@@ -6,6 +6,8 @@ import User from '../componets/User';
 import { ScrollView } from 'react-native';
 import SvgSprite from '../images/SvgSprite';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { selectIsLoggedIn } from '../redux/auth/authSelectors';
+import { useDispatch } from 'react-redux';
 
 const defaultPosts = [
   {
@@ -78,7 +80,6 @@ const PostsScreen = () => {
         <View style={styles.wrapper}>
           {posts.map((item, index) => (
             <View key={index}>
-              {console.log(item)}
               <Image style={styles.image} source={item.img} />
               <Text style={styles.title}>{item.title}</Text>
 
