@@ -48,21 +48,7 @@ const RegistrationScreen = () => {
     }
   }, [isLoggedIn]);
 
-  const handleRegistration = () => {
-    if (!email && !password && !login) {
-      Alert.alert('Введіть логін, електронну пошту та пароль!');
-      return;
-    }
-
-    dispatch(registerThunk({ email, password, login, localAvatar }));
-    setLogin('');
-    setEmail('');
-    setPassword('');
-    setLocalAvatar(null);
-    navigation.navigate('Home');
-  };
-
-  async function pickImage() {
+  async function selectAvatar() {
     const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
     if (!granted) {
       Alert.alert('Permission to access of the image library is required!');
@@ -79,8 +65,21 @@ const RegistrationScreen = () => {
     }
   }
 
-  const deletePickImage = () => {
+  const deleteAvatar = () => {
     setLocalAvatar(null);
+  };
+
+  const handleRegistration = () => {
+    if (!email && !password && !login) {
+      Alert.alert('Введіть логін, електронну пошту та пароль!');
+      return;
+    }
+
+    dispatch(registerThunk({ email, password, login, localAvatar }));
+    // setLogin('');
+    // setEmail('');
+    // setPassword('');
+    // setLocalAvatar(null);
   };
 
   const handleFocus = inputName => {
@@ -158,13 +157,16 @@ const RegistrationScreen = () => {
                       />
                       <Pressable
                         style={styles.addFotoGray}
-                        onPress={deletePickImage}
+                        onPress={deleteAvatar}
                       >
                         <SvgSprite name="add-grey" />
                       </Pressable>
                     </>
                   ) : (
-                    <Pressable style={styles.addFotoOrange} onPress={pickImage}>
+                    <Pressable
+                      style={styles.addFotoOrange}
+                      onPress={selectAvatar}
+                    >
                       <SvgSprite name="add-orange" />
                     </Pressable>
                   )}

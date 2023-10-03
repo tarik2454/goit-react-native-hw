@@ -1,5 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { logInThunk, logOutThunk, registerThunk } from './authOperations';
+import {
+  changeAvatar,
+  deleteAvatar,
+  logInThunk,
+  logOutThunk,
+  registerThunk,
+} from './authOperations';
 
 const defaultUserData = {
   uid: '',
@@ -27,8 +33,6 @@ export const authSlice = createSlice({
         state.user = payload;
         state.isLoggedIn = true;
       })
-      .addCase(registerThunk.pending, (state, action) => {})
-      .addCase(registerThunk.rejected, (state, action) => {})
       .addCase(logInThunk.fulfilled, (state, { payload }) => {
         state.isLoggedIn = true;
         state.user = payload;
@@ -36,13 +40,13 @@ export const authSlice = createSlice({
       .addCase(logOutThunk.fulfilled, state => {
         state.isLoggedIn = false;
         state.user = { ...defaultUserData };
+      })
+      .addCase(changeAvatar.fulfilled, (state, { payload }) => {
+        state.user.avatarURL = payload;
+      })
+      .addCase(deleteAvatar.fulfilled, state => {
+        state.user.avatarURL = null;
       });
-    // .addCase(changeAvatar.fulfilled, (state, { payload }) => {
-    //   state.user.avatarURL = payload;
-    // })
-    // .addCase(deleteAvatar.fulfilled, state => {
-    //   state.user.avatarURL = null;
-    // });
   },
 });
 

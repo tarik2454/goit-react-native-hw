@@ -6,8 +6,9 @@ import User from '../componets/User';
 import { ScrollView } from 'react-native';
 import SvgSprite from '../images/SvgSprite';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { selectIsLoggedIn } from '../redux/auth/authSelectors';
-import { useDispatch } from 'react-redux';
+import { selectIsLoggedIn, selectUser } from '../redux/auth/authSelectors';
+import { useDispatch, useSelector } from 'react-redux';
+import defaultAvatar from '../images/user-foto-big.png';
 
 const defaultPosts = [
   {
@@ -57,6 +58,8 @@ const PostsScreen = () => {
   const [posts, setPosts] = useState(defaultPosts);
   const navigation = useNavigation();
   const { params } = useRoute();
+  const { name, email, avatarURL } = useSelector(selectUser);
+  console.log(avatarURL);
 
   if (params && !posts.some(el => params.id === el.id)) {
     setPosts(prev => [...prev, params]);
@@ -76,7 +79,10 @@ const PostsScreen = () => {
   return (
     <ScrollView>
       <View style={GlobalStyles.container}>
-        <User />
+        <Image
+          style={{ width: 100, height: 100 }}
+          source={avatarURL ? { uri: avatarURL } : defaultAvatar}
+        />
         <View style={styles.wrapper}>
           {posts.map((item, index) => (
             <View key={index}>

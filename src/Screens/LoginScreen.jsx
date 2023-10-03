@@ -43,11 +43,13 @@ const LoginScreen = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigation.navigate('Home');
-    }
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     navigation.navigate('Home');
+  //   }
+  //   // setEmail('');
+  //   // setPassword('');
+  // }, [isLoggedIn]);
 
   const handleLogIn = () => {
     if (!email && !password) {
@@ -56,9 +58,6 @@ const LoginScreen = () => {
     }
 
     dispatch(logInThunk({ email, password }));
-    navigation.navigate('Home');
-    // setEmail('');
-    // setPassword('');
   };
 
   const handleFocus = inputName => {
