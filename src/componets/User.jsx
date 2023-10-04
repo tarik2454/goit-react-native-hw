@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 const User = () => {
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapperImage}>
       <Image source={require('../images/user-foto.png')} />
       <View>
         <Text style={styles.name}>Natali Romanova</Text>
@@ -14,7 +14,7 @@ const User = () => {
 };
 
 export const styles = StyleSheet.create({
-  wrapper: {
+  wrapperImage: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 32,

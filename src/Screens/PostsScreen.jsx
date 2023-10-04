@@ -53,13 +53,10 @@ const defaultPosts = [
 ];
 
 const PostsScreen = () => {
-  const [userName, setUserName] = useState('Anonimus');
-  const [userEmail, setUserEmail] = useState('anonimus@mail.com');
   const [posts, setPosts] = useState(defaultPosts);
   const navigation = useNavigation();
   const { params } = useRoute();
   const { name, email, avatarURL } = useSelector(selectUser);
-  console.log(avatarURL);
 
   if (params && !posts.some(el => params.id === el.id)) {
     setPosts(prev => [...prev, params]);
@@ -79,10 +76,18 @@ const PostsScreen = () => {
   return (
     <ScrollView>
       <View style={GlobalStyles.container}>
-        <Image
-          style={{ width: 100, height: 100 }}
-          source={avatarURL ? { uri: avatarURL } : defaultAvatar}
-        />
+        <View style={styles.wrapperImage}>
+          <Image
+            source={avatarURL ? { uri: avatarURL } : defaultAvatar}
+            style={{ width: 60, height: 60, borderRadius: 16 }}
+          />
+
+          <View>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.email}>{email}</Text>
+          </View>
+        </View>
+
         <View style={styles.wrapper}>
           {posts.map((item, index) => (
             <View key={index}>
@@ -119,7 +124,26 @@ const PostsScreen = () => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    gap: 34,
+    gap: 32,
+  },
+
+  wrapperImage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 32,
+  },
+
+  name: {
+    color: '#212121',
+    fontFamily: 'Roboto-700',
+    fontSize: 13,
+  },
+
+  email: {
+    color: 'rgba(33, 33, 33, 0.80)',
+    fontFamily: 'Roboto-400',
+    fontSize: 11,
   },
 
   image: {

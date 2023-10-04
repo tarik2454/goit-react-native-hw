@@ -32,7 +32,7 @@ const RegistrationScreen = () => {
     email: false,
     password: false,
   });
-  const [login, setLogin] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [shift, setShift] = useState(false);
@@ -70,16 +70,16 @@ const RegistrationScreen = () => {
   };
 
   const handleRegistration = () => {
-    if (!email && !password && !login) {
+    if (!email && !password && !name) {
       Alert.alert('Введіть логін, електронну пошту та пароль!');
       return;
     }
 
-    dispatch(registerThunk({ email, password, login, localAvatar }));
-    // setLogin('');
-    // setEmail('');
-    // setPassword('');
-    // setLocalAvatar(null);
+    dispatch(registerThunk({ email, password, name, localAvatar }));
+    setName('');
+    setEmail('');
+    setPassword('');
+    setLocalAvatar(null);
   };
 
   const handleFocus = inputName => {
@@ -182,10 +182,10 @@ const RegistrationScreen = () => {
                       isFocused.login ? styles.inputFocused : null,
                     ]}
                     placeholder="Логін"
-                    value={login}
-                    onChangeText={setLogin}
-                    onFocus={() => handleFocus('login')}
-                    onBlur={() => handleBlur('login')}
+                    value={name}
+                    onChangeText={setName}
+                    onFocus={() => handleFocus('name')}
+                    onBlur={() => handleBlur('name')}
                   />
                   <TextInput
                     inputMode="email"

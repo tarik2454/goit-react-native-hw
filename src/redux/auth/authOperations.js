@@ -78,7 +78,7 @@ export const logOutThunk = createAsyncThunk(
     try {
       await signOut(auth);
     } catch (error) {
-      // alert(`LogoutError, ${error.message}`);
+      alert(`LogoutError, ${error.message}`);
       return rejectWithValue(error.message);
     }
   }

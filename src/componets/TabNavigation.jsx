@@ -6,7 +6,6 @@ import LogOutBtn from './LogOutBtn';
 import SvgSprite from '../images/SvgSprite';
 import ProfileScreen from '../Screens/ProfileScreen';
 import CreatePostsScreen from '../Screens/CreatePostsScreen';
-import { Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { selectIsLoggedIn } from '../redux/auth/authSelectors';

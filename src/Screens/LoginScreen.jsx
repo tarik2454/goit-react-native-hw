@@ -43,13 +43,13 @@ const LoginScreen = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     navigation.navigate('Home');
-  //   }
-  //   // setEmail('');
-  //   // setPassword('');
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation.navigate('Home');
+    }
+    setEmail('');
+    setPassword('');
+  }, [isLoggedIn]);
 
   const handleLogIn = () => {
     if (!email && !password) {

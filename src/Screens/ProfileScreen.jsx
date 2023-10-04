@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import backgroundImage from '../images/backgroundImage.png';
@@ -14,6 +15,16 @@ import PostList from '../componets/PostList';
 import GlobalStyles from '../styles/GlobalStyles';
 import SvgSprite from '../images/SvgSprite';
 import LogOutBtn from '../componets/LogOutBtn';
+import {
+  changeAvatar,
+  deleteAvatar,
+  logOutThunk,
+} from '../redux/auth/authOperations';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectIsLoggedIn, selectUser } from '../redux/auth/authSelectors';
+import * as ImagePicker from 'expo-image-picker';
+import { useNavigation } from '@react-navigation/native';
+import defaultAvatar from '../images/user-foto-big.png';
 
 const ProfileScreen = () => {
   const defaultPosts = [
@@ -41,6 +52,39 @@ const ProfileScreen = () => {
   ];
 
   const [posts, setPosts] = useState(defaultPosts);
+  const { name, avatarURL } = useSelector(selectUser);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  console.log(avatarURL);
+
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     navigation.navigate('Login');
+  //   }
+  // }, [isLoggedIn]);
+
+  async function selectAvatar() {
+    const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
+    if (!granted) {
+      Alert.alert('Permission to access of the image library is required!');
+      return;
+    }
+
+    const { canceled, assets } = await ImagePicker.launchImageLibraryAsync({
+      quality: 1,
+      allowsEditing: true,
+      allowsMultipleSelection: false,
+    });
+    if (!canceled) {
+      dispatch(changeAvatar(assets[0].uri));
+    }
+  }
+
+  function removeAvatar() {
+    dispatch(deleteAvatar());
+  }
 
   return (
     <View style={styles.page}>
@@ -57,20 +101,37 @@ const ProfileScreen = () => {
       >
         <View style={styles.inner}>
           <View style={styles.foto}>
-            <Image
-              style={styles.imageUser}
-              source={require('../images/user-foto-big.png')}
-            />
-            <Pressable style={styles.addFoto} onPress={() => {}}>
-              <SvgSprite name="add-grey" />
-            </Pressable>
+            {avatarURL ? (
+              <>
+                <Image
+                  source={{ uri: avatarURL }}
+                  style={{ width: 120, height: 120, borderRadius: 16 }}
+                />
+                <Pressable style={styles.addFotoGray} onPress={removeAvatar}>
+                  <SvgSprite name="add-grey" />
+                </Pressable>
+              </>
+            ) : (
+              <>
+                <Image
+                  source={defaultAvatar}
+                  style={{ width: 120, height: 120, borderRadius: 16 }}
+                />
+                <Pressable style={styles.addFotoOrange} onPress={selectAvatar}>
+                  <SvgSprite name="add-orange" />
+                </Pressable>
+              </>
+            )}
           </View>
 
-          <Pressable style={styles.logOutBtn} onPress={() => {}}>
+          <TouchableOpacity
+            style={styles.logOutBtn}
+            onPress={() => dispatch(logOutThunk())}
+          >
             <LogOutBtn />
-          </Pressable>
+          </TouchableOpacity>
 
-          <Text style={styles.authorName}>Natali Romanova</Text>
+          <Text style={styles.authorName}>{name}</Text>
 
           <View style={GlobalStyles.container}>
             <View style={styles.wrapper}>
@@ -141,19 +202,19 @@ export const styles = StyleSheet.create({
     zIndex: 2,
   },
 
-  imageUser: {
-    width: 120,
-    height: 120,
-    borderRadius: 16,
-    overflow: 'hidden',
+  addFotoOrange: {
+    borderRadius: 12.5,
+    transform: 'rotate(45deg)',
+    position: 'absolute',
+    right: -12.5,
+    bottom: 14,
   },
 
-  addFoto: {
+  addFotoGray: {
     borderRadius: 12.5,
     position: 'absolute',
-    left: 101.82,
-    top: 75.82,
-    zIndex: 3,
+    right: -18,
+    bottom: 7.5,
   },
 
   logOutBtn: {
