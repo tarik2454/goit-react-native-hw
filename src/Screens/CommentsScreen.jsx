@@ -14,22 +14,27 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import GlobalStyles from '../styles/GlobalStyles';
 import SvgSprite from '../images/SvgSprite';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../redux/auth/authSelectors';
+import { selectPostByID } from '../redux/posts/postsSelectors';
+import defaultAvatar from '../images/user-foto-big.png';
+import { addComment } from '../redux/posts/postsOperation';
 
 const defaultComents = [
   {
-    useId: 123,
+    id: 123,
     body: 'Really love your most recent photo. I’ve been trying to capture the same thing for a few months and would love some tips!',
     useAvatar: require('../images/avatar-comment-1.png'),
     dataTime: '09 червня, 2020 | 08:40',
   },
   {
-    useId: 111,
+    id: 111,
     body: 'A fast 50mm like f1.8 would help with the bokeh. I’ve been using primes as they tend to get a bit sharper images.',
     useAvatar: require('../images/avatar-comment-2.png'),
     dataTime: '09 червня, 2020 | 09:14',
   },
   {
-    useId: 123,
+    id: 123,
     body: 'Thank you! That was very helpful!',
     useAvatar: require('../images/avatar-comment-1.png'),
     dataTime: '09 червня, 2020 | 09:20',
@@ -37,12 +42,26 @@ const defaultComents = [
 ];
 
 const CommentsScreen = () => {
-  const [comments, setComments] = useState(defaultComents);
   const [message, setMessage] = useState('');
+  const { params } = useRoute();
+  const { uid } = useSelector(selectUser);
+  const { id, image, comments } = useSelector(selectPostByID(params.id));
   const [iconColor, setIconColor] = useState('#FF6C00');
   const navigation = useNavigation();
 
-  const { params } = useRoute();
+  const onMessageSubmit = () => {
+    const createdAt = Date.now();
+    const newComment = {
+      id: uid + createdAt,
+      authorID: uid,
+      createdAt,
+      message,
+    };
+
+    Keyboard.dismiss();
+    dispatch(addComment({ id, comment: newComment }));
+    setMessage('');
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -54,17 +73,10 @@ const CommentsScreen = () => {
         fontSize: 17,
         lineHeight: 22,
         letterSpacing: -0.408,
-
         color: '#212121',
       },
     });
   }, []);
-
-  const handleSendPress = () => {
-    // Обработка нажатия кнопки отправки здесь
-    // Вы можете добавить свою логику для отправки комментария
-    // Сбросьте ввод и обновите состояние комментариев, если это необходимо
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -77,43 +89,16 @@ const CommentsScreen = () => {
           <View style={GlobalStyles.container}>
             <Image
               style={styles.postPhoto}
-              source={
-                params.img ? params.img : require('../images/user-foto.png')
-              }
+              source={image ? { uri: image } : defaultImage}
             />
             <View style={styles.commentsWrapper}>
-              {comments.map((item, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.comentInfo,
-                    item.useId === 111
-                      ? { flexDirection: 'row-reverse' }
-                      : { flexDirection: 'row' },
-                  ]}
-                >
-                  <Image
-                    style={styles.avatarPhoto}
-                    source={
-                      item.useAvatar
-                        ? item.useAvatar
-                        : require('../images/user-foto.png')
-                    }
-                  />
-                  <View
-                    style={{
-                      maxWidth: '75%',
-                      backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                      borderRadius: 6,
-                      padding: 16,
-                    }}
-                  >
-                    <Text style={styles.title}>{item.body}</Text>
-                    <Text style={styles.time}>{item.dataTime}</Text>
-                  </View>
+              {comments.map(comment => (
+                <View>
+                  <CommentItem key={comment.id} comment={comment} />
                 </View>
               ))}
             </View>
+
             <View style={styles.inputWrapper}>
               <TextInput
                 style={styles.input}
@@ -131,7 +116,7 @@ const CommentsScreen = () => {
                   },
                   styles.buttonSend,
                 ]}
-                onPress={handleSendPress}
+                onPress={() => message && onMessageSubmit()}
               >
                 <Text style={styles.buttonIcon}>
                   <SvgSprite name="send" fill={iconColor} />
@@ -142,6 +127,29 @@ const CommentsScreen = () => {
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
+  );
+};
+
+const CommentItem = ({ comment }) => {
+  return (
+    <View>
+      <View style={styles.comentInfo}>
+        <Image source={comment.useAvatar} style={styles.avatarPhoto} />
+        <View>
+          <View
+            style={{
+              maxWidth: '75%',
+              backgroundColor: 'rgba(0, 0, 0, 0.03)',
+              borderRadius: 6,
+              padding: 16,
+            }}
+          >
+            <Text style={styles.title}>{item.body}</Text>
+            <Text style={styles.time}>{item.dataTime}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 };
 

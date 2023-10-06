@@ -9,11 +9,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { selectIsLoggedIn, selectUser } from '../redux/auth/authSelectors';
 import { useDispatch, useSelector } from 'react-redux';
 import defaultAvatar from '../images/user-foto-big.png';
+import { selectPosts } from '../redux/posts/postsSelectors';
+import { getAllPosts } from '../redux/posts/postsOperation';
 
 const defaultPosts = [
   {
     id: 1,
-    img: require('../images/post-image-1.png'),
+    image: require('../images/post-image-1.png'),
     title: 'Ліс',
     comentsCount: 0,
     locationName: `Ivano-Frankivs'k Region, Ukraine`,
@@ -26,7 +28,7 @@ const defaultPosts = [
   },
   {
     id: 2,
-    img: require('../images/post-image-2.png'),
+    image: require('../images/post-image-2.png'),
     title: 'Захід на Чорному морі',
     comentsCount: 0,
     locationName: `Ivano-Frankivs'k Region, Ukraine`,
@@ -39,7 +41,7 @@ const defaultPosts = [
   },
   {
     id: 3,
-    img: require('../images/post-image-3.png'),
+    image: require('../images/post-image-3.png'),
     title: 'Старий будиночок y Венеції',
     comentsCount: 0,
     locationName: `Ivano-Frankivs'k Region, Ukraine`,
@@ -53,14 +55,15 @@ const defaultPosts = [
 ];
 
 const PostsScreen = () => {
-  const [posts, setPosts] = useState(defaultPosts);
   const navigation = useNavigation();
-  const { params } = useRoute();
   const { name, email, avatarURL } = useSelector(selectUser);
+  const posts = useSelector(selectPosts);
+  const dispatch = useDispatch();
+  const allPosts = defaultPosts.concat(posts);
 
-  if (params && !posts.some(el => params.id === el.id)) {
-    setPosts(prev => [...prev, params]);
-  }
+  useEffect(() => {
+    dispatch(getAllPosts());
+  }, []);
 
   const showMap = item => {
     navigation.navigate('Map', {
@@ -89,9 +92,16 @@ const PostsScreen = () => {
         </View>
 
         <View style={styles.wrapper}>
-          {posts.map((item, index) => (
+          {allPosts.map((item, index) => (
             <View key={index}>
-              <Image style={styles.image} source={item.img} />
+              <Image
+                style={styles.image}
+                source={
+                  typeof item.image === 'string'
+                    ? { uri: item.image }
+                    : item.image || defaultAvatar
+                }
+              />
               <Text style={styles.title}>{item.title}</Text>
 
               <View style={styles.footer}>

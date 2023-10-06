@@ -11,6 +11,7 @@ import {
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userReducer } from './auth/authSlice';
+import { postsReducer } from './posts/postsSlice';
 
 const persistConfig = {
   key: 'root',
@@ -20,6 +21,7 @@ const persistConfig = {
 export const store = configureStore({
   reducer: {
     auth: persistReducer(persistConfig, userReducer),
+    posts: postsReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

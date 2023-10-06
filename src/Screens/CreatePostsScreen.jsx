@@ -19,6 +19,9 @@ import * as Location from 'expo-location';
 import { TouchableOpacity } from 'react-native';
 import GlobalStyles from '../styles/GlobalStyles';
 import { ScrollView } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '../redux/auth/authSelectors';
+import { addPost } from '../redux/posts/postsOperation';
 
 const CreatePostsScreen = () => {
   const [isPressed, setIsPressed] = useState(false);
@@ -31,6 +34,8 @@ const CreatePostsScreen = () => {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [photo, setPhoto] = useState('');
   const navigation = useNavigation();
+  const { uid } = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -82,21 +87,25 @@ const CreatePostsScreen = () => {
     console.log('====================================');
   };
 
-  const publicPost = () => {
-    console.log(location);
-    navigation.navigate('Posts', {
-      id: 4,
-      img: photo,
-      location: location,
-      title: photoName,
-      comentsCount: 0,
-      locationName: photoLocation,
-    });
+  const handleSubmit = () => {
+    dispatch(
+      addPost({
+        id: uid,
+        image: photo,
+        location: location,
+        title: photoName,
+        comentsCount: [],
+        locationName: photoLocation,
+      })
+    );
+    resetData();
+    navigation.navigate('Posts');
   };
 
-  const handlePress = () => {
-    // Действия, которые должны выполняться при нажатии
-  };
+  function resetData() {
+    setPhotoName(null);
+    setPhotoLocation(null);
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -160,7 +169,7 @@ const CreatePostsScreen = () => {
                 },
                 styles.button,
               ]}
-              onPress={publicPost}
+              onPress={handleSubmit}
               onPressIn={() => setIsPressed(true)}
               onPressOut={() => setIsPressed(false)}
             >
