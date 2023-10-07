@@ -14,11 +14,12 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import GlobalStyles from '../styles/GlobalStyles';
 import SvgSprite from '../images/SvgSprite';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../redux/auth/authSelectors';
 import { selectPostByID } from '../redux/posts/postsSelectors';
-import defaultAvatar from '../images/user-foto-big.png';
+import defaultAvatar from '../images/avatar-comment-1.png';
 import { addComment } from '../redux/posts/postsOperation';
+import CommentItem from '../componets/CommentItem';
 
 const defaultComents = [
   {
@@ -46,8 +47,10 @@ const CommentsScreen = () => {
   const { params } = useRoute();
   const { uid } = useSelector(selectUser);
   const { id, image, comments } = useSelector(selectPostByID(params.id));
+  const isAnyComment = comments?.length > 0;
   const [iconColor, setIconColor] = useState('#FF6C00');
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onMessageSubmit = () => {
     const createdAt = Date.now();
@@ -64,6 +67,7 @@ const CommentsScreen = () => {
   };
 
   useEffect(() => {
+    console.log(image);
     navigation.setOptions({
       title: 'Коментарі',
       headerStyle: { borderBottomWidth: 1 },
@@ -76,80 +80,53 @@ const CommentsScreen = () => {
         color: '#212121',
       },
     });
-  }, []);
+  }, [navigation]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : null}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -200}
-      >
-        <ScrollView bounces={false} keyboardShouldPersistTaps="always">
-          <View style={GlobalStyles.container}>
-            <Image
-              style={styles.postPhoto}
-              source={image ? { uri: image } : defaultImage}
-            />
+      <ScrollView bounces={false} keyboardShouldPersistTaps="always">
+        <View style={GlobalStyles.container}>
+          <Image
+            style={styles.postPhoto}
+            source={image ? { uri: image } : defaultAvatar}
+          />
+          {isAnyComment ? (
             <View style={styles.commentsWrapper}>
               {comments.map(comment => (
-                <View>
-                  <CommentItem key={comment.id} comment={comment} />
-                </View>
+                <CommentItem key={comment.id} comment={comment} />
               ))}
             </View>
+          ) : (
+            <Text>Відгуки даного допису відсутні.</Text>
+          )}
 
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                multiline={true}
-                inputMode="text"
-                value={message}
-                onChangeText={setMessage}
-                placeholder="Коментувати..."
-                placeholderStyle={styles.placeholder}
-              />
-              <TouchableOpacity
-                style={({ pressed }) => [
-                  {
-                    backgroundColor: pressed ? '#f36601' : '#FF6C00',
-                  },
-                  styles.buttonSend,
-                ]}
-                onPress={() => message && onMessageSubmit()}
-              >
-                <Text style={styles.buttonIcon}>
-                  <SvgSprite name="send" fill={iconColor} />
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
-  );
-};
-
-const CommentItem = ({ comment }) => {
-  return (
-    <View>
-      <View style={styles.comentInfo}>
-        <Image source={comment.useAvatar} style={styles.avatarPhoto} />
-        <View>
-          <View
-            style={{
-              maxWidth: '75%',
-              backgroundColor: 'rgba(0, 0, 0, 0.03)',
-              borderRadius: 6,
-              padding: 16,
-            }}
-          >
-            <Text style={styles.title}>{item.body}</Text>
-            <Text style={styles.time}>{item.dataTime}</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              multiline={true}
+              inputMode="text"
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Коментувати..."
+              placeholderStyle={styles.placeholder}
+            />
+            <TouchableOpacity
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed ? '#f36601' : '#FF6C00',
+                },
+                styles.buttonSend,
+              ]}
+              onPress={() => message && onMessageSubmit()}
+            >
+              <Text style={styles.buttonIcon}>
+                <SvgSprite name="send" fill={iconColor} />
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -205,7 +182,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#F6F6F6',
     borderRadius: 100,
-    position: 'fixed',
   },
 
   placeholder: {

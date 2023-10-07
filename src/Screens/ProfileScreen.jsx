@@ -25,6 +25,8 @@ import { selectIsLoggedIn, selectUser } from '../redux/auth/authSelectors';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import defaultAvatar from '../images/user-foto-big.png';
+import { selectPostsByOwner } from '../redux/posts/postsSelectors';
+import PostItem from '../componets/PostItem';
 
 const ProfileScreen = () => {
   const defaultPosts = [
@@ -51,19 +53,14 @@ const ProfileScreen = () => {
     },
   ];
 
-  const [posts, setPosts] = useState(defaultPosts);
   const { name, avatarURL } = useSelector(selectUser);
-  const navigation = useNavigation();
+  const posts = useSelector(selectPostsByOwner);
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  // const allPosts = defaultPosts.concat(posts);
 
-  console.log(avatarURL);
-
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     navigation.navigate('Login');
-  //   }
-  // }, [isLoggedIn]);
+  useEffect(() => {
+    console.log(posts);
+  });
 
   async function selectAvatar() {
     const { granted } = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -135,29 +132,9 @@ const ProfileScreen = () => {
 
           <View style={GlobalStyles.container}>
             <View style={styles.wrapper}>
-              {posts.map((item, index) => (
-                <View key={index}>
-                  <Image style={styles.image} source={item.img} />
-                  <Text style={styles.title}>{item.title}</Text>
-
-                  <View style={styles.footer}>
-                    <View style={styles.infoWrapper}>
-                      <View style={styles.info}>
-                        <SvgSprite name="reviews" />
-                        <Text>{item.comentsCount}</Text>
-                      </View>
-                      <View style={styles.info}>
-                        <SvgSprite name="thumbs-up" />
-                        <Text>{item.likeCount}</Text>
-                      </View>
-                    </View>
-                    <View style={styles.info}>
-                      <SvgSprite name="location" />
-                      <Text>{item.location}</Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
+              {posts.map(post => {
+                return <PostItem key={post.id} post={post} />;
+              })}
             </View>
           </View>
         </View>

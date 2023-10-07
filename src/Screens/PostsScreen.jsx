@@ -92,40 +92,42 @@ const PostsScreen = () => {
         </View>
 
         <View style={styles.wrapper}>
-          {allPosts.map((item, index) => (
-            <View key={index}>
-              <Image
-                style={styles.image}
-                source={
-                  typeof item.image === 'string'
-                    ? { uri: item.image }
-                    : item.image || defaultAvatar
-                }
-              />
-              <Text style={styles.title}>{item.title}</Text>
+          {allPosts.map((item, index) => {
+            return (
+              <View key={index}>
+                <Image
+                  style={styles.image}
+                  source={
+                    typeof item.image === 'string'
+                      ? { uri: item.image }
+                      : item.image || defaultAvatar
+                  }
+                />
+                <Text style={styles.title}>{item.title}</Text>
 
-              <View style={styles.footer}>
-                <View style={styles.info}>
-                  <TouchableOpacity
-                    style={styles.coments}
-                    onPress={() => showComents(item)}
-                  >
-                    <SvgSprite name="reviews" />
-                    <Text>{item.comentsCount}</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.info}>
-                  <TouchableOpacity
-                    style={styles.location}
-                    onPress={() => showMap(item)}
-                  >
-                    <SvgSprite name="location" />
-                    <Text>{item.locationName}</Text>
-                  </TouchableOpacity>
+                <View style={styles.footer}>
+                  <View style={styles.info}>
+                    <TouchableOpacity
+                      style={styles.coments}
+                      onPress={() => showComents(item)}
+                    >
+                      <SvgSprite name="reviews" />
+                      <Text>{item.comentsCount}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.info}>
+                    <TouchableOpacity
+                      style={styles.location}
+                      onPress={() => showMap(item)}
+                    >
+                      <SvgSprite name="location" />
+                      <Text>{item.locationName}</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </View>
     </ScrollView>

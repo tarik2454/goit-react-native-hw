@@ -90,12 +90,13 @@ const CreatePostsScreen = () => {
   const handleSubmit = () => {
     dispatch(
       addPost({
-        id: uid,
+        authorID: uid,
         image: photo,
         location: location,
         title: photoName,
-        comentsCount: [],
+        comments: [],
         locationName: photoLocation,
+        likes: 0,
       })
     );
     resetData();
