@@ -1,64 +1,30 @@
-import 'react-native-gesture-handler';
-import React from 'react';
-import { useFonts } from 'expo-font';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './src/Screens/LoginScreen';
-import RegistrationScreen from './src/Screens/RegistrationScreen';
-import Home from './src/Screens/Home';
-import MapScreen from './src/Screens/MapScreen';
-import CommentsScreen from './src/Screens/CommentsScreen';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, store } from './src/redux/store';
+import { useFonts } from "expo-font";
+import Navigation from "./Screens/Navigation";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./redux/index";
+import { useCallback } from "react";
 
-const Stack = createStackNavigator();
-
-const App = () => {
+export default function App() {
   const [fontsLoaded] = useFonts({
-    'Roboto-400': require('./src/assets/fonts/Roboto-400.ttf'),
-    'Roboto-500': require('./src/assets/fonts/Roboto-500.ttf'),
-    'Roboto-700': require('./src/assets/fonts/Roboto-700.ttf'),
-    'Inter-500': require('./src/assets/fonts/Inter-500.ttf'),
+    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
   });
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
   if (!fontsLoaded) {
     return null;
   }
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login">
-            <Stack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="Registration"
-              component={RegistrationScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen name="Map" component={MapScreen} />
-            <Stack.Screen name="Comments" component={CommentsScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Navigation onLayout={onLayoutRootView} />
       </PersistGate>
     </Provider>
   );
-};
-
-export default App;
+}
